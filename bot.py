@@ -1,10 +1,12 @@
 import discord
 import random
 import os
+import config as c
 
 from discord import app_commands
 from discord.ext import commands
 from datetime import datetime, timedelta
+
 
 import logging as log
 
@@ -27,11 +29,10 @@ intents.guilds = True
 # Enables the bot to detect and respond to reactions on messages.
 intents.reactions = True
 
-DISCORD_TOKEN = "MTI4NTY1NjkxNTAwMjc4NTg2Mg.GY_3Hb.Ahek0pLlo020t2W35-RnC8O7mMd20-Ha8hgi9E" #os.environ["discord_token"]
+DISCORD_TOKEN = "" #os.environ["discord_token"]
 
 # Configura tu bot con los intents y el prefijo
 bot = commands.Bot(command_prefix='y!', intents=intents, help_command=None)
-
 
 
 @bot.event
@@ -39,7 +40,7 @@ async def on_ready():
     log.info(f'{bot.user} está listo.')
     bot.start_time = datetime.now()
     try:
-        synced = await bot.tree.sync()  # Sincroniza los comandos de barra (slash commands) con Discord
+        synced = await bot.tree.sync()
         log.info(f'Sincronizados {len(synced)} comando(s)')
 
     except Exception as e:
@@ -53,7 +54,6 @@ async def status(interaction: discord.Interaction):
     status = "En línea ✅️" if bot.is_ready() else "Desconectado ❌"
     uptime = datetime.now() - bot.start_time
 
-    # Calcular días, horas, minutos y segundos
     days = uptime.days
     hours, remainder = divmod(uptime.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -74,19 +74,36 @@ async def status(interaction: discord.Interaction):
     embed.set_thumbnail(url=complete_path)
     embed.set_footer(text="Powered by: ⛩️Yakuza⛩️ - La Palma RP🌴")
 
-    # Enviar el archivo y usarlo en el embed
     with open(complete_path, 'rb') as f:
         file = discord.File(f, filename='yakuza-logo.PNG')
         embed.set_thumbnail(url='attachment://yakuza-logo.PNG')
         await interaction.response.send_message(file=file, embed=embed)
 
 
+@bot.tree.command(name="rank-up")
+async def rank_up(interaction: discord.Interaction, member: discord.Member, role: discord.Role):
+    """ Asciende a un miembro de la Yakuza y muestra un mensaje sobre ello """
+    await member.add_roles(role)
+    random_answer = give_random_answer("rank_up")
+
+    await interaction.response.send_message(random_answer.format(member.mention, role.mention))
+
+
+@bot.tree.command(name="rank-down")
+async def rank_down(interaction: discord.Interaction, member: discord.Member, role: discord.Role):
+    """ Desciende el rango a un miembro de la Yakuza y muestra un mensaje sobre ello """
+    await member.remove_roles(role)
+    random_answer = give_random_answer("rank_down")
+
+    await interaction.response.send_message(random_answer.format(member.mention, role.mention))
+
+
 
 def give_random_answer(command):
-    '''if c.config is not None:
-        bot_anwser = random.choice(c.config[command]["bot_answers"])
+    if c.config is not None:
+        bot_anwser = random.choice(c.config["commands"][command]["bot_answers"])
         print(f'Respuesta escogida: {bot_anwser}')
-        return bot_anwser'''
+        return bot_anwser
 
 
 def run_bot():
