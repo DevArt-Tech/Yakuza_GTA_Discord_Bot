@@ -29,7 +29,7 @@ intents.guilds = True
 # Enables the bot to detect and respond to reactions on messages.
 intents.reactions = True
 
-DISCORD_TOKEN = "" #os.environ["discord_token"]
+DISCORD_TOKEN = os.environ["discord_token"]
 
 # Configura tu bot con los intents y el prefijo
 bot = commands.Bot(command_prefix='y!', intents=intents, help_command=None)
@@ -83,18 +83,48 @@ async def status(interaction: discord.Interaction):
 @bot.tree.command(name="rank-up")
 async def rank_up(interaction: discord.Interaction, member: discord.Member, role: discord.Role):
     """ Asciende a un miembro de la Yakuza y muestra un mensaje sobre ello """
-    await member.add_roles(role)
-    random_answer = give_random_answer("rank_up")
 
+    # Elimina los roles asociados a un rango en concreto
+    for category, subranks in c.config["ranks"].items():
+        if any(role in member.roles for role in [category] + (subranks or [])):
+            # Elimina roles de la categoría actual
+            roles_to_remove = [role for role in member.roles if role == category or (subranks and role in subranks)]
+            for role in roles_to_remove:
+                await member.remove_roles(role)
+
+    # Asigna el nuevo rango
+    await member.add_roles(role)
+
+    # Si el nuevo rango tiene subcategoría y pertenece a una categoría, también asigna el rol principal
+    for category, subranks in c.config["ranks"].items():
+        if role in subranks:
+            await member.add_roles(category)
+
+    random_answer = give_random_answer("rank_up")
     await interaction.response.send_message(random_answer.format(member.mention, role.mention))
 
 
 @bot.tree.command(name="rank-down")
 async def rank_down(interaction: discord.Interaction, member: discord.Member, role: discord.Role):
     """ Desciende el rango a un miembro de la Yakuza y muestra un mensaje sobre ello """
-    await member.remove_roles(role)
-    random_answer = give_random_answer("rank_down")
 
+    # Elimina roles superiores a la nueva categoría
+    for category, subranks in c.config["ranks"].items():
+        if any(role in member.roles for role in [category] + (subranks or [])):
+            # Elimina roles de la categoría actual
+            roles_to_remove = [role for role in member.roles if role == category or (subranks and role in subranks)]
+            for role in roles_to_remove:
+                await member.remove_roles(role)
+
+    # Asigna el nuevo rango
+    await member.add_roles(role)
+
+    # Si el nuevo rango es de una subcategoría inferior, también asigna el rol principal
+    for category, subranks in c.config["ranks"].items():
+        if role in subranks:
+            await member.add_roles(category)
+
+    random_answer = give_random_answer("rank_down")
     await interaction.response.send_message(random_answer.format(member.mention, role.mention))
 
 
