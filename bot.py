@@ -29,7 +29,7 @@ intents.guilds = True
 # Enables the bot to detect and respond to reactions on messages.
 intents.reactions = True
 
-DISCORD_TOKEN = os.environ["discord_token"]
+DISCORD_TOKEN = "MTI4NTY1NjkxNTAwMjc4NTg2Mg.GgLd7I.iBysFTxU8eAhtuWUJp3l4wZ55LYmZCsqXtF-X4" #os.environ["discord_token"]
 
 # Configura tu bot con los intents y el prefijo
 bot = commands.Bot(command_prefix='y!', intents=intents, help_command=None)
@@ -81,52 +81,55 @@ async def status(interaction: discord.Interaction):
 
 
 @bot.tree.command(name="rank-up")
-async def rank_up(interaction: discord.Interaction, member: discord.Member, role: discord.Role):
+async def rank_up(interaction: discord.Interaction, member: discord.Member, new_role: discord.Role):
     """ Asciende a un miembro de la Yakuza y muestra un mensaje sobre ello """
 
-    # Elimina los roles asociados a un rango en concreto
     for category, subranks in c.config["ranks"].items():
-        if any(role in member.roles for role in [category] + (subranks or [])):
-            # Elimina roles de la categoría actual
-            roles_to_remove = [role for role in member.roles if role == category or (subranks and role in subranks)]
-            for role in roles_to_remove:
-                await member.remove_roles(role)
+        possible_roles = [category] + (subranks or [])
+        member_roles = member.roles
+        if any(role.name in possible_roles for role in member_roles):
+            roles_to_remove = [role for role in member_roles if role.name == category or (subranks and role.name in subranks)]
+
+            if roles_to_remove:
+                await member.remove_roles(*roles_to_remove)
 
     # Asigna el nuevo rango
-    await member.add_roles(role)
+    await member.add_roles(new_role)
 
-    # Si el nuevo rango tiene subcategoría y pertenece a una categoría, también asigna el rol principal
     for category, subranks in c.config["ranks"].items():
-        if role in subranks:
-            await member.add_roles(category)
+        if subranks and new_role.name in subranks:
+            category_role = discord.utils.get(member.guild.roles, name=category)
+            if category_role:
+                await member.add_roles(category_role)
 
     random_answer = give_random_answer("rank_up")
-    await interaction.response.send_message(random_answer.format(member.mention, role.mention))
+    await interaction.response.send_message(random_answer.format(member.mention, new_role.mention))
 
 
 @bot.tree.command(name="rank-down")
-async def rank_down(interaction: discord.Interaction, member: discord.Member, role: discord.Role):
+async def rank_down(interaction: discord.Interaction, member: discord.Member, new_role: discord.Role):
     """ Desciende el rango a un miembro de la Yakuza y muestra un mensaje sobre ello """
 
-    # Elimina roles superiores a la nueva categoría
     for category, subranks in c.config["ranks"].items():
-        if any(role in member.roles for role in [category] + (subranks or [])):
-            # Elimina roles de la categoría actual
-            roles_to_remove = [role for role in member.roles if role == category or (subranks and role in subranks)]
-            for role in roles_to_remove:
-                await member.remove_roles(role)
+        possible_roles = [category] + (subranks or [])
+        member_roles = member.roles
+        if any(role.name in possible_roles for role in member_roles):
+            roles_to_remove = [role for role in member_roles if role.name == category or (subranks and role.name in subranks)]
+
+            if roles_to_remove:
+                await member.remove_roles(*roles_to_remove)
 
     # Asigna el nuevo rango
-    await member.add_roles(role)
+    await member.add_roles(new_role)
 
-    # Si el nuevo rango es de una subcategoría inferior, también asigna el rol principal
     for category, subranks in c.config["ranks"].items():
-        if role in subranks:
-            await member.add_roles(category)
+        if subranks and new_role.name in subranks:
+            category_role = discord.utils.get(member.guild.roles, name=category)
+            if category_role:
+                await member.add_roles(category_role)
 
     random_answer = give_random_answer("rank_down")
-    await interaction.response.send_message(random_answer.format(member.mention, role.mention))
-
+    await interaction.response.send_message(random_answer.format(member.mention, new_role.mention))
 
 
 def give_random_answer(command):
