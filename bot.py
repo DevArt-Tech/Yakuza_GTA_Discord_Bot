@@ -29,7 +29,7 @@ intents.guilds = True
 # Enables the bot to detect and respond to reactions on messages.
 intents.reactions = True
 
-DISCORD_TOKEN = "MTI4NTY1NjkxNTAwMjc4NTg2Mg.GgLd7I.iBysFTxU8eAhtuWUJp3l4wZ55LYmZCsqXtF-X4" #os.environ["discord_token"]
+DISCORD_TOKEN = os.environ["discord_token"]
 
 # Configura tu bot con los intents y el prefijo
 bot = commands.Bot(command_prefix='y!', intents=intents, help_command=None)
@@ -102,7 +102,11 @@ async def rank_up(interaction: discord.Interaction, member: discord.Member, new_
             if category_role:
                 await member.add_roles(category_role)
 
-    random_answer = give_random_answer("rank_up")
+    if new_role.name == "ASCENSO A KYODAI":
+        random_answer = give_random_answer("rank_up", "bot_answers_phase")
+    else:
+        random_answer = give_random_answer("rank_up")
+
     await interaction.response.send_message(random_answer.format(member.mention, new_role.mention))
 
 
@@ -128,13 +132,16 @@ async def rank_down(interaction: discord.Interaction, member: discord.Member, ne
             if category_role:
                 await member.add_roles(category_role)
 
-    random_answer = give_random_answer("rank_down")
+    if new_role.name == "ASCENSO A KYODAI":
+        random_answer = give_random_answer("rank_down", "bot_answers_phase")
+    else:
+        random_answer = give_random_answer("rank_down")
     await interaction.response.send_message(random_answer.format(member.mention, new_role.mention))
 
 
-def give_random_answer(command):
+def give_random_answer(command, sub_command="bot_answers"):
     if c.config is not None:
-        bot_anwser = random.choice(c.config["commands"][command]["bot_answers"])
+        bot_anwser = random.choice(c.config["commands"][command][sub_command])
         print(f'Respuesta escogida: {bot_anwser}')
         return bot_anwser
 

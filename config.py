@@ -18,6 +18,13 @@ config = {
                 "**¡¿NANI?!, ¡{}, TE HAS GANADO EL RANGO DE {}!. TU SABIDURÍA Y LEALTAD SON AHORA UN EJEMPLO A SEGUIR.**",
                 "**¡OMEDETO (FELICIDADES) {}! AHORA ERES {}, TU PERSEVERANCIA EN LA BÚSQUEDA DE LA VERDAD ES INSPIRADORA.**",
                 "**SUBARASHII (MAGNÍFICO), {}. TU ASCENSO A {} ES TESTIMONIO DE TU GRAN HONOR Y COMPROMISO. SIGUE ASÍ.**"
+            ],
+            "bot_answers_phase": [
+                "**OMEDETO (FELICIDADES) {}, ESTÁS EN FASE DE {}. ¡GANBARE!**",
+                "**¡{}, SUGOI (INCREÍBLE)! ESTÁS EN FASE DE {}. ¡SIGUE CON ESA FUERZA, GANBARE!**",
+                "**KEIGA (ENHORABUENA) {}, AHORA ESTÁS EN FASE DE {}. ¡OMEDETO Y GANBARE, SIGUE ADELANTE!**",
+                "**¡OMEDETO {}! TU DEDICACIÓN TE HA LLEVADO A LA FASE DE {}. ¡MANTÉN EL ESFUERZO, GANBARE!**",
+                "**¡SUGOI (INCREÍBLE) {}! ESTÁS EN FASE DE {}. DEMUESTRA TU VALOR Y ¡GANBARE!**"
             ]
         },
         "rank_down": {
@@ -29,7 +36,15 @@ config = {
                 "**¡{}! HAS BAJADO A {}, PERO LA VERDADERA FUERZA SE MUESTRA EN LA ADVERSIDAD. SIGUE ADELANTE.**",
                 "**{} HA SIDO DEGRADADO A {}. PERO TU ESPÍRITU Y HONOR TE LLEVARÁN A SUPERAR CUALQUIER PRUEBA. GANBATTE (ESFUÉRZATE).**",
                 "**¡SHITSUREI SHIMASHITA (PERDÓN POR LA MOLESTIA), {}! AHORA ERES {}, PERO LA VERDADERA GRANDEZA SE MANIFIESTA EN LA SUPERACIÓN DE RETOS.**",
-                "**¡{}! TU DESCENSO A {} ES UNA OPORTUNIDAD PARA REAFIRMAR TU HONOR Y DISCIPLINA. SIGUE ADELANTE. GANBARE (ÁNIMO).**"            ]
+                "**¡{}! TU DESCENSO A {} ES UNA OPORTUNIDAD PARA REAFIRMAR TU HONOR Y DISCIPLINA. SIGUE ADELANTE. GANBARE (ÁNIMO).**"
+            ],
+            "bot_answers_phase": [
+                "**OMEDETO (FELICIDADES) {}, ESTÁS EN FASE DE {}. ¡GANBARE!**",
+                "**¡{}, SUGOI (INCREÍBLE)! ESTÁS EN FASE DE {}. ¡SIGUE CON ESA FUERZA, GANBARE!**",
+                "**KEIGA (ENHORABUENA) {}, AHORA ESTÁS EN FASE DE {}. ¡OMEDETO Y GANBARE, SIGUE ADELANTE!**",
+                "**¡OMEDETO {}! TU DEDICACIÓN TE HA LLEVADO A LA FASE DE {}. ¡MANTÉN EL ESFUERZO, GANBARE!**",
+                "**¡SUGOI (INCREÍBLE) {}! ESTÁS EN FASE DE {}. DEMUESTRA TU VALOR Y ¡GANBARE!**"
+            ]
         }
     }
 }
