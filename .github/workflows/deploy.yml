@@ -1,4 +1,4 @@
-name: Deploy Godfather_Discord_Bot
+name: Deploy Yakuza_GTA_Discord_Bot
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false  # Cambia esto a true si deseas empujar la imagen a un registro
-          tags: il-padrino:latest  # Cambia el nombre de la imagen según sea necesario
+          tags: yakuza-gta:latest  # Cambia el nombre de la imagen según sea necesario
 
       - name: Deploy to VPS
         env:
@@ -40,7 +40,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/id_rsa
           chmod 600 /home/runner/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa root@31.220.82.248 << 'EOF'
-            cd projects/Discord_Bots/Godfather_Discord_Bot
+            cd projects/Discord_Bots/Yakuza_GTA_Discord_Bot
             git pull
             docker-compose pull
             docker-compose build
