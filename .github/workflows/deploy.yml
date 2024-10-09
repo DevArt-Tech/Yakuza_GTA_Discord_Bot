@@ -1,0 +1,48 @@
+name: Deploy Godfather_Discord_Bot
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false  # Cambia esto a true si deseas empujar la imagen a un registro
+          tags: il-padrino:latest  # Cambia el nombre de la imagen según sea necesario
+
+      - name: Deploy to VPS
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p /home/runner/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/id_rsa
+          chmod 600 /home/runner/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa root@31.220.82.248 << 'EOF'
+            cd projects/Discord_Bots/Godfather_Discord_Bot
+            git pull
+            docker-compose pull
+            docker-compose build
+            docker-compose up -d
+          EOF
